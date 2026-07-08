@@ -1,6 +1,6 @@
 import { db } from '../db/index.js';
 import { sessions, users, memberships, invitations, passwordResets, organizations } from '../db/schema/index.js'
-import { eq, and, isNull } from 'drizzle-orm';
+import { eq, and, isNull, asc } from 'drizzle-orm';
 import { hash, verify } from '../auth/index.js';
 import { createHash, randomBytes } from 'node:crypto';
 import { env } from '../env.js';
@@ -150,7 +150,16 @@ export async function loginWithPassword(opts: { email: string; password: string 
   if (!ok) throw new UnauthorizedError('Invalid email or password');
 
   await db.update(users).set({ lastLoginAt: new Date() }).where(eq(users.id, u.id));
-  return u;
+
+  // Pick first membership as default active org (the user can switch via /api/session/active-org)
+  const [firstMembership] = await db
+    .select()
+    .from(memberships)
+    .where(and(eq(memberships.userId, u.id), eq(memberships.status, 'active')))
+    .orderBy(asc(memberships.createdAt))
+    .limit(1);
+
+  return { user: u, firstMembershipId: firstMembership?.id ?? null, firstOrgId: firstMembership?.orgId ?? null };
 }
 
 /* ----------------------- Password reset ----------------------- */

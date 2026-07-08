@@ -76,12 +76,14 @@ export async function authRoutes(app: FastifyInstance) {
   /* ---------- Login ---------- */
   app.post('/login', async (req, reply) => {
     const body = LoginBody.parse(req.body);
-    const user = await loginWithPassword({ email: body.email, password: body.password });
+    const { user, firstMembershipId, firstOrgId } = await loginWithPassword({ email: body.email, password: body.password });
     const ctx = getCtx(req);
     const { id: sessionId } = await createSession({
       userId: user.id,
       ip: ctx.ip,
       userAgent: ctx.userAgent,
+      activeOrgId: firstOrgId,
+      activeMembershipId: firstMembershipId,
     });
     setSessionCookie(reply, sessionId);
     recordAuditSafe(req, { action: 'auth.login.succeeded', targetType: 'user', targetId: user.id });
