@@ -20,8 +20,11 @@ const authPluginImpl = async (app: FastifyInstance) => {
    * Populates ctx.userId and ctx.membershipId and (req as any).activeRole.
    */
   app.decorate('requireAuth', async function (req: FastifyRequest, _reply: FastifyReply) {
-    const sid = req.cookies[SESSION_COOKIE];
-    if (!sid) throw new UnauthorizedError('Not signed in');
+    const raw = req.cookies[SESSION_COOKIE];
+    if (!raw) throw new UnauthorizedError('Not signed in');
+    const unsigned = req.unsignCookie(raw);
+    if (!unsigned.valid) throw new UnauthorizedError('Invalid session signature');
+    const sid = unsigned.value;
     const session = await loadSession(sid);
     if (!session) throw new UnauthorizedError('Session expired');
     if (session.state === 'pending_mfa') throw new UnauthorizedError('MFA required');
@@ -44,8 +47,11 @@ const authPluginImpl = async (app: FastifyInstance) => {
    * Soft: parses session if present, populates ctx, but does not require.
    */
   app.decorate('requireSession', async function (req: FastifyRequest, _reply: FastifyReply) {
-    const sid = req.cookies[SESSION_COOKIE];
-    if (!sid) return;
+    const raw = req.cookies[SESSION_COOKIE];
+    if (!raw) return;
+    const unsigned = req.unsignCookie(raw);
+    if (!unsigned.valid) return;
+    const sid = unsigned.value;
     const session = await loadSession(sid);
     if (!session) return;
     await touchSession(sid);
