@@ -1,6 +1,6 @@
 import { pgTable, text, timestamp, uuid, varchar, boolean, jsonb, integer, numeric, index, uniqueIndex } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
-import { organizations } from './orgs.js';
+import { organizations } from './orgs.js'
 
 /**
  * Suppliers — abstracted upstream vendors (SanMar, S&S, Blue Generation, etc.)

@@ -10,6 +10,16 @@ import { orgRoutes } from './routes/orgs.js';
 import { userRoutes } from './routes/users.js';
 import { auditRoutes } from './routes/audit.js';
 import { catalogRoutes } from './routes/catalog.js';
+import {
+  cartRoutes,
+  orderRoutes,
+  invoiceRoutes,
+  documentRoutes,
+  artworkRoutes,
+  messageRoutes,
+  notificationRoutes,
+  favoriteRoutes,
+} from './routes/orders.js';
 import { setActiveOrgRoutes } from './routes/session.js';
 import { errorHandler } from './plugins/error-handler.js';
 import { requestContext } from './plugins/request-context.js';
@@ -62,6 +72,14 @@ export async function buildServer(): Promise<FastifyInstance> {
   await app.register(auditRoutes, { prefix: '/api/audit' });
   await app.register(setActiveOrgRoutes, { prefix: '/api/session' });
   await app.register(catalogRoutes, { prefix: '/api/catalog' });
+  await app.register(cartRoutes, { prefix: '/api' });
+  await app.register(orderRoutes, { prefix: '/api' });
+  await app.register(invoiceRoutes, { prefix: '/api' });
+  await app.register(documentRoutes, { prefix: '/api' });
+  await app.register(artworkRoutes, { prefix: '/api' });
+  await app.register(messageRoutes, { prefix: '/api' });
+  await app.register(notificationRoutes, { prefix: '/api' });
+  await app.register(favoriteRoutes, { prefix: '/api' });
 
   return app;
 }
