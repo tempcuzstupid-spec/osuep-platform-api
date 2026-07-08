@@ -9,7 +9,8 @@
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
     "migrate": "node dist/migrate.js",
-    "seed": "node dist/seed.js"
+    "seed": "node dist/seed.js",
+    "start:shell": "bash start.sh"
   },
   "dependencies": {
     "@fastify/cookie": "^9.4.0",
