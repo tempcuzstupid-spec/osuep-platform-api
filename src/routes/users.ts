@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { db } from '../db/index.js';
-import { users, memberships, organizations } from '../db/schema';
+import { users, memberships, organizations } from '../db/schema/index.js';
 import { eq, and } from 'drizzle-orm';
 import { requirePermission } from '../services/rbac.js';
 import { getCtx } from '../plugins/request-context.js';

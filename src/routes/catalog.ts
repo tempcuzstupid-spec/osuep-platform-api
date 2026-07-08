@@ -10,7 +10,7 @@ import {
   suppliers,
   supplierProductMappings,
   supplierFeedImports,
-} from '../db/schema';
+} from '../db/schema/index.js';
 import { and, asc, desc, eq, like, or, sql, inArray } from 'drizzle-orm';
 import { getCtx } from '../plugins/request-context.js';
 import { BadRequestError, NotFoundError, ForbiddenError } from '../plugins/error-handler.js';
