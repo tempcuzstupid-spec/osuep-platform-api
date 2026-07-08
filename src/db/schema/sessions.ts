@@ -1,5 +1,5 @@
 import { pgTable, text, timestamp, uuid, varchar, index, jsonb } from 'drizzle-orm/pg-core';
-import { users } from './users.js';
+import { users } from './users';
 
 /**
  * Sessions — server-side session store.

@@ -1,5 +1,5 @@
 import { pgTable, text, timestamp, uuid, varchar, boolean, index, uniqueIndex } from 'drizzle-orm/pg-core';
-import { organizations, locations, departments } from './orgs.js';
+import { organizations, locations, departments } from './orgs';
 
 /**
  * Users — individuals who can sign in.

@@ -9,6 +9,7 @@ import { authRoutes } from './routes/auth.js';
 import { orgRoutes } from './routes/orgs.js';
 import { userRoutes } from './routes/users.js';
 import { auditRoutes } from './routes/audit.js';
+import { catalogRoutes } from './routes/catalog.js';
 import { setActiveOrgRoutes } from './routes/session.js';
 import { errorHandler } from './plugins/error-handler.js';
 import { requestContext } from './plugins/request-context.js';
@@ -60,6 +61,7 @@ export async function buildServer(): Promise<FastifyInstance> {
   await app.register(userRoutes, { prefix: '/api/users' });
   await app.register(auditRoutes, { prefix: '/api/audit' });
   await app.register(setActiveOrgRoutes, { prefix: '/api/session' });
+  await app.register(catalogRoutes, { prefix: '/api/catalog' });
 
   return app;
 }
