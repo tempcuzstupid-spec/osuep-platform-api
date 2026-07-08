@@ -90,11 +90,14 @@ export async function authRoutes(app: FastifyInstance) {
 
   /* ---------- Logout ---------- */
   app.post('/logout', async (req, reply) => {
-    const sid = req.cookies[SESSION_COOKIE];
-    if (sid) {
-      try {
-        await revokeSession(sid);
-      } catch {}
+    const raw = req.cookies[SESSION_COOKIE];
+    if (raw) {
+      const unsigned = req.unsignCookie(raw);
+      if (unsigned.valid) {
+        try {
+          await revokeSession(unsigned.value);
+        } catch {}
+      }
     }
     clearSessionCookie(reply);
     return { ok: true };
@@ -123,8 +126,11 @@ export async function authRoutes(app: FastifyInstance) {
 
   /* ---------- Me (current session) ---------- */
   app.get('/me', async (req) => {
-    const sid = req.cookies[SESSION_COOKIE];
-    if (!sid) throw new UnauthorizedError('Not signed in');
+    const raw = req.cookies[SESSION_COOKIE];
+    if (!raw) throw new UnauthorizedError('Not signed in');
+    const unsigned = req.unsignCookie(raw);
+    if (!unsigned.valid) throw new UnauthorizedError('Invalid session signature');
+    const sid = unsigned.value;
     const session = await loadSession(sid);
     if (!session) throw new UnauthorizedError('Session expired');
     await touchSession(sid);

@@ -23,8 +23,11 @@ export async function setActiveOrgRoutes(app: FastifyInstance) {
       .where(and(eq(memberships.userId, ctx.userId), eq(memberships.orgId, orgId)))
       .limit(1);
     if (!m) throw new ForbiddenError('Not a member of this organization');
-    const sid = req.cookies[SESSION_COOKIE];
-    if (!sid) throw new BadRequestError('No session');
+    const raw = req.cookies[SESSION_COOKIE];
+    if (!raw) throw new BadRequestError('No session');
+    const unsigned = req.unsignCookie(raw);
+    if (!unsigned.valid) throw new BadRequestError('Invalid session');
+    const sid = unsigned.value;
     await db
       .update(sessions)
       .set({ activeOrgId: orgId, activeMembershipId: m.id })
