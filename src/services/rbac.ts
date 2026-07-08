@@ -1,5 +1,5 @@
 import { db } from '../db/index.js';
-import { rolePermissions, type Role } from '../db/index.js';
+import { rolePermissions, type Role } from '../db/schema';
 import { sql } from 'drizzle-orm';
 import { ForbiddenError } from '../plugins/error-handler.js';
 import type { FastifyRequest } from 'fastify';

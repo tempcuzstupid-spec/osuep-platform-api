@@ -1,5 +1,5 @@
 import { db } from '../db/index.js';
-import { sessions, users, memberships, invitations, passwordResets, organizations } from '../db/index.js';
+import { sessions, users, memberships, invitations, passwordResets, organizations } from '../db/schema';
 import { eq, and, isNull } from 'drizzle-orm';
 import { hash, verify } from '../auth/index.js';
 import { createHash, randomBytes } from 'node:crypto';

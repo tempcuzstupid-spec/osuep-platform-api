@@ -1,5 +1,5 @@
 import { db } from '../db/index.js';
-import { auditEvents, type NewAuditEvent } from '../db/index.js';
+import { auditEvents, type NewAuditEvent } from '../db/schema';
 import { getCtx } from '../plugins/request-context.js';
 import type { FastifyRequest } from 'fastify';
 

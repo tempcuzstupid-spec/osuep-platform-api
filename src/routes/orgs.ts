@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { db } from '../db/index.js';
-import { organizations, locations, departments } from '../db/index.js';
+import { organizations, locations, departments } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { requirePermission } from '../services/rbac.js';
 import { recordAuditSafe } from '../services/audit.js';
