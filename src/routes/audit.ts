@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { db } from '../db/index.js';
-import { auditEvents } from '../db/schema/index.js';
+import { auditEvents } from '../db/schema';
 import { and, desc, eq, gte, lte } from 'drizzle-orm';
 import { requirePermission } from '../services/rbac.js';
 import { getCtx } from '../plugins/request-context.js';

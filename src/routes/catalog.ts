@@ -10,7 +10,7 @@ import {
   suppliers,
   supplierProductMappings,
   supplierFeedImports,
-} from '../db/schema/index.js';
+} from '../db/schema';
 import { and, asc, desc, eq, like, or, sql, inArray } from 'drizzle-orm';
 import { getCtx } from '../plugins/request-context.js';
 import { BadRequestError, NotFoundError, ForbiddenError } from '../plugins/error-handler.js';
@@ -102,11 +102,20 @@ export async function catalogRoutes(app: FastifyInstance) {
     const filters = [eq(products.status, 'active'), eq(products.isPublic, true)];
     if (q.category) {
       // Try by slug first, then by id
-      const [cat] = await db
+      let cat = await db
         .select()
         .from(categories)
-        .where(or(eq(categories.slug, q.category), eq(categories.id, q.category)))
-        .limit(1);
+        .where(eq(categories.slug, q.category))
+        .limit(1)
+        .then((r) => r[0]);
+      if (!cat) {
+        cat = await db
+          .select()
+          .from(categories)
+          .where(eq(categories.id, q.category))
+          .limit(1)
+          .then((r) => r[0]);
+      }
       if (!cat) return { products: [], total: 0, limit: q.limit, offset: q.offset };
       filters.push(eq(products.categoryId, cat.id));
     }
@@ -114,8 +123,10 @@ export async function catalogRoutes(app: FastifyInstance) {
       filters.push(eq(products.customizable, q.customizable));
     }
     if (q.search && q.search.trim().length > 0) {
-      const term = `%${q.search.trim()}%`;
-      filters.push(or(like(products.name, term), like(products.sku, term))!);
+      const term = `%${q.search.trim().toLowerCase()}%`;
+      filters.push(
+        sql`(LOWER(${products.name}) LIKE ${term} OR LOWER(${products.sku}) LIKE ${term})`
+      );
     }
 
     const order =
